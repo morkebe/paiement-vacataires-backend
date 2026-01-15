@@ -18,7 +18,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.stream.Collectors;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ByteArrayResource;
 
 @Service
 @RequiredArgsConstructor
@@ -124,6 +128,37 @@ public class PaiementService {
         return paiementRepository.findByStatut(statut).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    public List<PaiementResponse> getAllPaiements() {
+        return paiementRepository.findAll().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public PaiementResponse getPaiement(Long id) {
+        return paiementRepository.findById(id)
+                .map(this::mapToResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("Paiement non trouvé"));
+    }
+
+    public void marquerCommePaye(Long id) {
+        Paiement paiement = paiementRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Paiement non trouvé"));
+        paiement.setStatut(StatutPaiement.PAYE);
+        paiement.setDatePaiement(LocalDate.now());
+        paiementRepository.save(paiement);
+    }
+
+    public Resource generateBordereau(Long id) {
+        Paiement paiement = paiementRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Paiement non trouvé"));
+        byte[] data = new byte[0]; // Placeholder for PDF generation
+        return new ByteArrayResource(data);
+    }
+
+    public Map<String, Object> getStatistiques() {
+        return new HashMap<>();
     }
 
     private String generateNumeroBordereau() {

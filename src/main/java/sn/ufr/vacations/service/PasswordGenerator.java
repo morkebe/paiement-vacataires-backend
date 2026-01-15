@@ -1,4 +1,4 @@
-package sn.ufr.vacations.util;
+package sn.ufr.vacations.service;
 
 import java.security.SecureRandom;
 

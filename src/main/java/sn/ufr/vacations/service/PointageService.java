@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,6 +92,57 @@ public class PointageService {
         return pointageRepository.findByVacataireId(vacataireId).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    public List<PointageResponse> getAllPointages() {
+        return pointageRepository.findAll().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public PointageResponse getPointage(Long id) {
+        return pointageRepository.findById(id)
+                .map(this::mapToResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("Pointage non trouvé"));
+    }
+
+    public List<PointageResponse> getPointagesByAttribution(Long attributionId) {
+        return pointageRepository.findByAttributionId(attributionId).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<PointageResponse> getPointagesByPeriode(Long vacataireId, LocalDate debut, LocalDate fin) {
+        return pointageRepository.findAll().stream()
+                .filter(p -> p.getVacataire().getId().equals(vacataireId) &&
+                        !p.getDate().isBefore(debut) &&
+                        !p.getDate().isAfter(fin))
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PointageResponse updatePointage(Long id, PointageRequest request) {
+        Pointage pointage = pointageRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pointage non trouvé"));
+        
+        pointage.setHeureDebut(request.getHeureDebut());
+        pointage.setHeureFin(request.getHeureFin());
+        pointage.setTypeCours(request.getTypeCours());
+        pointage.setRemarque(request.getRemarque());
+        
+        pointageRepository.save(pointage);
+        return mapToResponse(pointage);
+    }
+
+    @Transactional
+    public void validatePointagesBatch(List<Long> pointageIds, String validateur) {
+        pointageIds.forEach(id -> validatePointage(id, validateur));
+    }
+
+    @Transactional
+    public void deletePointage(Long id) {
+        pointageRepository.deleteById(id);
     }
 
     @Transactional
