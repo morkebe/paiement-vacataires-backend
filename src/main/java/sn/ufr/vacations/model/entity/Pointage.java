@@ -43,7 +43,8 @@ public class Pointage {
     @Column(name = "duree_minutes")
     private Integer dureeMinutes;
 
-    @Column(name = "duree_heures", precision = 5, scale = 2)
+    // CORRECTION: Retirer precision et scale pour Double
+    @Column(name = "duree_heures")
     private Double dureeHeures;
 
     private String remarque;

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
@@ -51,10 +52,10 @@ public class PointageService {
 
         // Calculer la durée
         long minutes = Duration.between(request.getHeureDebut(), request.getHeureFin()).toMinutes();
+        BigDecimal heuresDuree = BigDecimal.valueOf(minutes).divide(BigDecimal.valueOf(60), 2, java.math.RoundingMode.HALF_UP);
 
         // Vérifier le volume restant
-        Double heuresValidees = pointageRepository.getTotalHeuresValidees(attribution.getId());
-        if (heuresValidees == null) heuresValidees = 0.0;
+        BigDecimal heuresValidees = pointageRepository.getTotalHeuresValidees(attribution.getId());
 
         int volumeMax = switch(request.getTypeCours()) {
             case CM -> attribution.getHeuresCMAttribuees();
@@ -62,7 +63,7 @@ public class PointageService {
             case TP -> attribution.getHeuresTPAttribuees();
         };
 
-        if (heuresValidees + (minutes / 60.0) > volumeMax) {
+        if (heuresValidees.add(heuresDuree).compareTo(BigDecimal.valueOf(volumeMax)) > 0) {
             throw new BadRequestException("Le volume horaire maximum pour ce type de cours est dépassé");
         }
 
@@ -87,7 +88,6 @@ public class PointageService {
 
         return mapToResponse(pointage);
     }
-
     public List<PointageResponse> getPointagesByVacataire(Long vacataireId) {
         return pointageRepository.findByVacataireId(vacataireId).stream()
                 .map(this::mapToResponse)
@@ -125,12 +125,12 @@ public class PointageService {
     public PointageResponse updatePointage(Long id, PointageRequest request) {
         Pointage pointage = pointageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pointage non trouvé"));
-        
+
         pointage.setHeureDebut(request.getHeureDebut());
         pointage.setHeureFin(request.getHeureFin());
         pointage.setTypeCours(request.getTypeCours());
         pointage.setRemarque(request.getRemarque());
-        
+
         pointageRepository.save(pointage);
         return mapToResponse(pointage);
     }
@@ -171,7 +171,7 @@ public class PointageService {
                 .heureDebut(pointage.getHeureDebut())
                 .heureFin(pointage.getHeureFin())
                 .typeCours(pointage.getTypeCours())
-                .dureeHeures(pointage.getDureeHeures())
+                .dureeHeures(BigDecimal.valueOf(pointage.getDureeHeures()))
                 .remarque(pointage.getRemarque())
                 .valide(pointage.getValide())
                 .dateValidation(pointage.getDateValidation())

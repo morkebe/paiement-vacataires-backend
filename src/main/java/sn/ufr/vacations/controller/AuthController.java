@@ -2,6 +2,7 @@ package sn.ufr.vacations.controller;
 
 import sn.ufr.vacations.model.dto.request.ChangePasswordRequest;
 import sn.ufr.vacations.model.dto.request.LoginRequest;
+import sn.ufr.vacations.model.dto.request.RegisterRequest;
 import sn.ufr.vacations.model.dto.response.ApiResponse;
 import sn.ufr.vacations.model.dto.response.AuthResponse;
 import sn.ufr.vacations.service.AuthService;
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(authService.register(request));
+    }
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);

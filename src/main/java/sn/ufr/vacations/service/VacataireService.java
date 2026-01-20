@@ -1,5 +1,6 @@
 package sn.ufr.vacations.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import sn.ufr.vacations.exception.BadRequestException;
 import sn.ufr.vacations.exception.ResourceNotFoundException;
 import sn.ufr.vacations.model.dto.request.VacataireRequest;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class VacataireService {
-
+    @Autowired(required = false)
     private final VacataireRepository vacataireRepository;
     private final UserRepository userRepository;
     private final DepartementRepository departementRepository;
@@ -31,7 +32,9 @@ public class VacataireService {
     private final EmailService emailService;
     private final AuditService auditService;
 
+
     @Transactional
+
     public VacataireResponse createVacataire(VacataireRequest request, String createdBy) {
         // Vérifier si l'email existe déjà
         if (vacataireRepository.existsByEmail(request.getEmail())) {

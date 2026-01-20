@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,7 +25,8 @@ public class PointageResponse {
     private LocalTime heureDebut;
     private LocalTime heureFin;
     private TypeCours typeCours;
-    private Double dureeHeures;
+    private BigDecimal dureeHeures;
+
     private String remarque;
     private Boolean valide;
     private LocalDateTime dateValidation;

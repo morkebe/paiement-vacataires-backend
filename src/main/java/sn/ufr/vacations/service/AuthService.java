@@ -4,8 +4,10 @@ import sn.ufr.vacations.exception.BadRequestException;
 import sn.ufr.vacations.exception.UnauthorizedException;
 import sn.ufr.vacations.model.dto.request.ChangePasswordRequest;
 import sn.ufr.vacations.model.dto.request.LoginRequest;
+import sn.ufr.vacations.model.dto.request.RegisterRequest;
 import sn.ufr.vacations.model.dto.response.AuthResponse;
 import sn.ufr.vacations.model.entity.User;
+import sn.ufr.vacations.model.enums.Role;
 import sn.ufr.vacations.repository.UserRepository;
 import sn.ufr.vacations.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -27,6 +31,25 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuditService auditService;
 
+
+    public String register(RegisterRequest request) {
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Cet utilisateur existe déjà");
+        }
+
+
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setEnabled(true);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.valueOf(request.getRole()));
+        user.setCreatedAt(LocalDateTime.now());
+
+        userRepository.save(user);
+        return "Utilisateur enregistré avec succès !";
+    }
     @Transactional
     public AuthResponse login(LoginRequest request) {
         try {

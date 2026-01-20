@@ -29,9 +29,10 @@ public class EmailService {
             message.setText(buildCredentialsEmailBody(username, password));
 
             mailSender.send(message);
+            System.out.println("username: "+username+" password: "+password);
             log.info("Email d'identifiants envoyé à : {}", toEmail);
         } catch (Exception e) {
-            log.error("Erreur lors de l'envoi de l'email à : {}", toEmail, e);
+            log.error("Erreur lors de l'envoi de l'email à : {} username: {} password: {}", toEmail,username, password,e);
         }
     }
 

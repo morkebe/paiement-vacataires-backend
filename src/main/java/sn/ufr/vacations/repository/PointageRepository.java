@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public interface PointageRepository extends JpaRepository<Pointage, Long> {
     @Query("SELECT p FROM Pointage p WHERE p.attribution.id = :attributionId AND p.valide = false")
     List<Pointage> findNonValidesByAttribution(@Param("attributionId") Long attributionId);
 
-    @Query("SELECT SUM(p.dureeHeures) FROM Pointage p WHERE p.attribution.id = :attributionId AND p.valide = true")
-    Double getTotalHeuresValidees(@Param("attributionId") Long attributionId);
+    // CORRECTION: Changer Double en BigDecimal
+    @Query("SELECT COALESCE(SUM(p.dureeHeures), 0) FROM Pointage p WHERE p.attribution.id = :attributionId AND p.valide = true")
+    BigDecimal getTotalHeuresValidees(@Param("attributionId") Long attributionId);
 }

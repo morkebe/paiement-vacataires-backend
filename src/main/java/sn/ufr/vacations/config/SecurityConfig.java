@@ -52,6 +52,9 @@ public class SecurityConfig {
                         .requestMatchers("/vacataires/me", "/pointages/**")
                         .hasAnyRole("VACATAIRE", "ASSISTANT_DEPARTEMENT", "ADMIN_UFR")
 
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
