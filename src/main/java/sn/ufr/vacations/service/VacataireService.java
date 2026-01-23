@@ -88,19 +88,19 @@ public class VacataireService {
 
         return mapToResponse(vacataire);
     }
-
+    @Transactional(readOnly = true)
     public VacataireResponse getVacataire(Long id) {
         Vacataire vacataire = vacataireRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vacataire non trouvé"));
         return mapToResponse(vacataire);
     }
-
+    @Transactional(readOnly = true)
     public List<VacataireResponse> getAllVacataires() {
         return vacataireRepository.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     public List<VacataireResponse> getVacatairesByDepartement(Long departementId) {
         return vacataireRepository.findByDepartementId(departementId).stream()
                 .map(this::mapToResponse)
@@ -124,7 +124,7 @@ public class VacataireService {
 
         return mapToResponse(vacataire);
     }
-
+    @Transactional(readOnly = true)
     private String generateUsername(String nom, String prenom) {
         String base = (prenom.substring(0, 1) + nom).toLowerCase()
                 .replaceAll("[^a-z]", "");
@@ -137,7 +137,7 @@ public class VacataireService {
 
         return username;
     }
-
+    @Transactional(readOnly = true)
     public VacataireResponse getVacataireByUserId(Long userId) {
         Vacataire vacataire = vacataireRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Vacataire non trouvé pour cet utilisateur"));

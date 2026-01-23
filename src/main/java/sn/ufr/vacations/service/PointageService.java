@@ -88,30 +88,31 @@ public class PointageService {
 
         return mapToResponse(pointage);
     }
+    @Transactional(readOnly = true)
     public List<PointageResponse> getPointagesByVacataire(Long vacataireId) {
         return pointageRepository.findByVacataireId(vacataireId).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     public List<PointageResponse> getAllPointages() {
         return pointageRepository.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     public PointageResponse getPointage(Long id) {
         return pointageRepository.findById(id)
                 .map(this::mapToResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Pointage non trouvé"));
     }
-
+    @Transactional(readOnly = true)
     public List<PointageResponse> getPointagesByAttribution(Long attributionId) {
         return pointageRepository.findByAttributionId(attributionId).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     public List<PointageResponse> getPointagesByPeriode(Long vacataireId, LocalDate debut, LocalDate fin) {
         return pointageRepository.findAll().stream()
                 .filter(p -> p.getVacataire().getId().equals(vacataireId) &&

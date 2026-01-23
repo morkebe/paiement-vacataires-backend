@@ -22,6 +22,7 @@ public class DepartementController {
     private final DepartementService departementService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN_UFR')")
     public ResponseEntity<ApiResponse<DepartementResponse>> createDepartement(
             @Valid @RequestBody DepartementRequest request) {
         DepartementResponse response = departementService.createDepartement(request);
@@ -30,19 +31,20 @@ public class DepartementController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN_UFR', 'ASSISTANT_DEPARTEMENT', 'SERVICE_FINANCIER')")
     public ResponseEntity<ApiResponse<List<DepartementResponse>>> getAllDepartements() {
         List<DepartementResponse> response = departementService.getAllDepartements();
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN_UFR')")
     public ResponseEntity<ApiResponse<DepartementResponse>> getDepartement(@PathVariable Long id) {
         DepartementResponse response = departementService.getDepartement(id);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN_UFR')")
     public ResponseEntity<ApiResponse<DepartementResponse>> updateDepartement(
             @PathVariable Long id,
             @Valid @RequestBody DepartementRequest request) {
@@ -51,6 +53,7 @@ public class DepartementController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN_UFR')")
     public ResponseEntity<ApiResponse<Void>> deleteDepartement(@PathVariable Long id) {
         departementService.deleteDepartement(id);
         return ResponseEntity.ok(ApiResponse.success("Département supprimé avec succès", null));

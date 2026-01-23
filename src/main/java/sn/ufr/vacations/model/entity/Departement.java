@@ -20,7 +20,7 @@ public class Departement {
 
     @Column(nullable = false, unique = true)
     private String code;
-
+    private String nom;
     @Column(nullable = false)
     private String libelle;
 

@@ -28,6 +28,7 @@ public class DepartementService {
 
         Departement departement = Departement.builder()
                 .code(request.getCode())
+                .nom(request.getNom())
                 .libelle(request.getLibelle())
                 .description(request.getDescription())
                 .build();
@@ -39,13 +40,13 @@ public class DepartementService {
 
         return mapToResponse(departement);
     }
-
+    @Transactional(readOnly = true)
     public DepartementResponse getDepartement(Long id) {
         Departement departement = departementRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Département non trouvé"));
         return mapToResponse(departement);
     }
-
+    @Transactional(readOnly = true)
     public List<DepartementResponse> getAllDepartements() {
         return departementRepository.findAll().stream()
                 .map(this::mapToResponse)
@@ -65,7 +66,7 @@ public class DepartementService {
         departement.setCode(request.getCode());
         departement.setLibelle(request.getLibelle());
         departement.setDescription(request.getDescription());
-
+        departement.setNom(request.getNom());
         departement = departementRepository.save(departement);
 
         auditService.log("UPDATE", "Departement", id,
@@ -89,6 +90,7 @@ public class DepartementService {
         return DepartementResponse.builder()
                 .id(departement.getId())
                 .code(departement.getCode())
+                .nom(departement.getNom())
                 .libelle(departement.getLibelle())
                 .description(departement.getDescription())
                 .nombreFilieres(departement.getFilieres().size())

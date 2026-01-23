@@ -20,8 +20,10 @@ public class CorsConfig {
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "http://localhost:4200",
-                "http://localhost:5173"
-        ));
+                "http://localhost:5173",
+                "http://localhost:8081"
+
+                ));
 
         // Méthodes HTTP autorisées
         configuration.setAllowedMethods(Arrays.asList(

@@ -33,13 +33,14 @@ public class VacataireController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ASSISTANT_DEPARTEMENT', 'ADMIN_UFR', 'SERVICE_FINANCIER')")
+    @PreAuthorize("hasAnyRole('ASSISTANT_DEPARTEMENT', 'ADMIN_UFR')")
     public ResponseEntity<ApiResponse<List<VacataireResponse>>> getAllVacataires() {
         List<VacataireResponse> response = vacataireService.getAllVacataires();
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ASSISTANT_DEPARTEMENT', 'ADMIN_UFR')")
     public ResponseEntity<ApiResponse<VacataireResponse>> getVacataire(@PathVariable Long id) {
         VacataireResponse response = vacataireService.getVacataire(id);
         return ResponseEntity.ok(ApiResponse.success(response));

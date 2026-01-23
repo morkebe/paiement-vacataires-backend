@@ -46,19 +46,19 @@ public class FiliereService {
 
         return mapToResponse(filiere);
     }
-
+    @Transactional(readOnly = true)
     public FiliereResponse getFiliere(Long id) {
         Filiere filiere = filiereRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Filière non trouvée"));
         return mapToResponse(filiere);
     }
-
+    @Transactional(readOnly = true)
     public List<FiliereResponse> getAllFilieres() {
         return filiereRepository.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     public List<FiliereResponse> getFilieresByDepartement(Long departementId) {
         return filiereRepository.findByDepartementId(departementId).stream()
                 .map(this::mapToResponse)

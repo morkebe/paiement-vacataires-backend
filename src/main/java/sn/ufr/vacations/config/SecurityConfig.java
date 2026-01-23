@@ -32,13 +32,15 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configure(http))
+                .sessionManagement(sm-> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS) )
+                .headers(headers -> headers.frameOptions(fo -> fo.disable()))
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
                         .requestMatchers("/auth/**", "/actuator/health").permitAll()
 
                         // Admin endpoints
                         .requestMatchers("/admin/**", "/departements/**", "/filieres/**", "/cours/**")
-                        .hasRole("ADMIN_UFR")
+                        .hasAnyRole("ADMIN_UFR")
 
                         // Assistant endpoints
                         .requestMatchers("/vacataires/create", "/attributions/**")
@@ -51,6 +53,7 @@ public class SecurityConfig {
                         // Vacataire endpoints
                         .requestMatchers("/vacataires/me", "/pointages/**")
                         .hasAnyRole("VACATAIRE", "ASSISTANT_DEPARTEMENT", "ADMIN_UFR")
+
 
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()

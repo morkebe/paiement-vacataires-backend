@@ -117,31 +117,31 @@ public class PaiementService {
         auditService.log("REJECT", "Paiement", paiementId,
                 "Rejet du paiement: " + motif, rejetePar);
     }
-
+    @Transactional(readOnly = true)
     public List<PaiementResponse> getPaiementsByVacataire(Long vacataireId) {
         return paiementRepository.findByVacataireId(vacataireId).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     public List<PaiementResponse> getPaiementsByStatut(StatutPaiement statut) {
         return paiementRepository.findByStatut(statut).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     public List<PaiementResponse> getAllPaiements() {
         return paiementRepository.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     public PaiementResponse getPaiement(Long id) {
         return paiementRepository.findById(id)
                 .map(this::mapToResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Paiement non trouvé"));
     }
-
+    @Transactional(readOnly = true)
     public void marquerCommePaye(Long id) {
         Paiement paiement = paiementRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Paiement non trouvé"));
@@ -149,7 +149,7 @@ public class PaiementService {
         paiement.setDatePaiement(LocalDate.now());
         paiementRepository.save(paiement);
     }
-
+    @Transactional(readOnly = true)
     public Resource generateBordereau(Long id) {
         Paiement paiement = paiementRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Paiement non trouvé"));

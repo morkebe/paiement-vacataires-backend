@@ -52,13 +52,13 @@ public class CoursService {
 
         return mapToResponse(cours);
     }
-
+    @Transactional(readOnly = true)
     public CoursResponse getCours(Long id) {
         Cours cours = coursRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cours non trouvé"));
         return mapToResponse(cours);
     }
-
+    @Transactional(readOnly = true)
     public List<CoursResponse> getAllCours() {
         return coursRepository.findAll().stream()
                 .map(this::mapToResponse)
@@ -70,7 +70,7 @@ public class CoursService {
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     public List<CoursResponse> getCoursByDepartement(Long departementId) {
         return coursRepository.findByDepartementId(departementId).stream()
                 .map(this::mapToResponse)
